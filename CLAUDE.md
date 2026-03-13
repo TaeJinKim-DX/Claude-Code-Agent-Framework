@@ -201,6 +201,20 @@ AI_WORKFLOW.md
 
 ---
 
+## Dependency 및 버전 관리 규칙
+
+- dependency 생성 시 표준 문서에 정의된 기준 버전을 따른다.
+- `requirements.txt`, `pyproject.toml`, `package.json` 생성 시 느슨한 범위(`>=`, 광범위한 `^`, `*`)를 기본값으로 사용하지 않는다.
+- 특별한 사유가 없으면 고정 버전 또는 lock 파일 기준으로 관리한다.
+- Python 작업은 `runtime-python.md`의 기준 버전을 따른다.
+- TypeScript 작업은 `runtime-typescript.md`의 기준 버전을 따른다.
+- 기준 버전과 다른 값을 사용할 경우 변경 사유를 결과 요약에 남긴다.
+
+When generating dependency files, do not invent version ranges.
+Always prefer the exact versions defined in runtime-python.md or runtime-typescript.md.
+
+---
+
 ## 공통 인터페이스 원칙
 
 모든 Agent는 가능한 한 아래 공통 구조를 따른다.
