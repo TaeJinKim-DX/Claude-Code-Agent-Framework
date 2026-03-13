@@ -1,7 +1,3 @@
-from pathlib import Path
-
-content = """# plan.md
-
 ## 문서 목적
 
 이 문서는 코드를 수정하거나 새로 작성하기 전에 반드시 수행해야 하는 설계 및 영향도 분석 기준을 정의한다.  
@@ -323,8 +319,3 @@ LLM 호출 구조를 설계할 때 LiteLLM Gateway 우선 원칙을 유지한다
 영향 파일과 테스트를 식별한다.  
 리스크를 먼저 드러낸다.  
 그 후에만 구현으로 넘어간다.
-"""
-
-path = Path("/mnt/data/plan.md")
-path.write_text(content, encoding="utf-8")
-print(f"Saved to {path}")
