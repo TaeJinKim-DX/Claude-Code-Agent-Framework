@@ -39,6 +39,31 @@
 
 ---
 
+## Python 기술 스택 및 기준 버전
+
+| 구분 | 제품/패키지 | 기준 버전 | 용도 |
+|---|---|---:|---|
+| Runtime | Python | 3.14.3 | Python Agent 실행 런타임 |
+| Framework | LangGraph | 1.0.10 | 상태 기반 워크플로우 및 Agent 오케스트레이션 |
+| Framework | LangChain + LangGraph | LangChain 1.2.11 / LangGraph 1.0.10 | Tool 연동과 상태 기반 오케스트레이션 |
+| Validation | Pydantic | 2.12.5 | 요청/응답 및 설정 검증 |
+| API 서버 | FastAPI | 0.135.1 | Agent API 제공 |
+| HTTP Client | httpx | 0.28.1 | 외부 시스템 및 LiteLLM 통신 |
+| dotenv 로더 | python-dotenv | 1.2.2 | 로컬 개발 환경 설정 |
+| 테스트 | pytest | 9.0.2 | 테스트 프레임워크 |
+| 린트/포맷 | ruff | 0.15.5 | 린트/포맷 통합 |
+| 정적 타입체크 | mypy | 1.19.1 | 타입 검증 |
+
+### 버전 관리 규칙
+
+- dependency는 위 표의 기준 버전을 따른다.
+- `requirements.txt` 또는 lock 파일 생성 시 `>=` 범위를 사용하지 않는다.
+- 특별한 사유가 없으면 고정 버전(`==`) 또는 lock 파일 기준으로 관리한다.
+- 표준 문서의 기준 버전과 다른 값을 사용할 경우 사유를 남긴다.
+- 메이저 버전 변경 시 회귀 테스트를 수행한다.
+
+---
+
 ## Python Agent 적용 대상
 
 아래 경우 Python 기반 Agent를 우선 검토한다.
