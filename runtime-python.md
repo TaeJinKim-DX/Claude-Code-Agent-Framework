@@ -1,7 +1,3 @@
-from pathlib import Path
-
-content = """# runtime-python.md
-
 ## 문서 목적
 
 이 문서는 Python 기반 Agent를 구현할 때 따라야 하는 런타임 및 구현 규칙을 정의한다.  
