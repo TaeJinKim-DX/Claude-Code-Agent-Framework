@@ -44,6 +44,7 @@
 
 | 구분 | 제품/패키지 | 기준 버전 | 용도 |
 |---|---|---:|---|
+| LLM Gateway | LiteLLM | 1.82.1 | 다중 모델 라우팅 및 게이트웨이 |
 | Runtime | Node.js | 24.14.x (LTS) 또는 프로젝트 확정 버전 | TypeScript Agent 실행 런타임 |
 | Language | TypeScript | 프로젝트 확정 버전 | Agent 개발 언어 |
 | Client Framework | Next.js | 16.1.x | TypeScript 기반 Agent UI 또는 API Gateway 계층 |
