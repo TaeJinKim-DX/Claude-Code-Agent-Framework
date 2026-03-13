@@ -43,6 +43,7 @@
 
 | 구분 | 제품/패키지 | 기준 버전 | 용도 |
 |---|---|---:|---|
+| LLM Gateway | LiteLLM | 1.82.1 | 다중 모델 라우팅 및 게이트웨이 |
 | Runtime | Python | 3.14.3 | Python Agent 실행 런타임 |
 | Framework | LangGraph | 1.0.10 | 상태 기반 워크플로우 및 Agent 오케스트레이션 |
 | Framework | LangChain + LangGraph | LangChain 1.2.11 / LangGraph 1.0.10 | Tool 연동과 상태 기반 오케스트레이션 |
