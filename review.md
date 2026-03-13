@@ -1,6 +1,3 @@
-from pathlib import Path
-
-content = """# review.md
 
 ## 문서 목적
 
@@ -341,8 +338,3 @@ LiteLLM 우회, 민감정보 로그, 테스트 누락, 숨은 side effect는 즉
 중복과 과잉 추상화를 함께 점검한다.  
 문제가 있으면 명확히 지적한다.  
 애매하면 승인하지 않는다.
-"""
-
-path = Path("/mnt/data/review.md")
-path.write_text(content, encoding="utf-8")
-print(f"Saved to {path}")
