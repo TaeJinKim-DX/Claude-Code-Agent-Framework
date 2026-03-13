@@ -1,4 +1,7 @@
 # CLAUDE.md
+Primary workflow document:
+
+AI_WORKFLOW.md
 
 ## 문서 목적
 
