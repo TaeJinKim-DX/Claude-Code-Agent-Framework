@@ -1,7 +1,14 @@
 # CLAUDE.md
-Primary workflow document:
 
-AI_WORKFLOW.md
+Primary workflow document:
+@AI_WORKFLOW.md
+
+Additional rule documents:
+@.opencode/agents/plan.md
+@.opencode/agents/build.md
+@.opencode/agents/review.md
+@docs/ai/runtime-python.md
+@docs/ai/runtime-typescript.md
 
 ## 문서 목적
 
@@ -78,21 +85,49 @@ Python과 TypeScript는 경쟁 관계가 아니다.
 
 ---
 
-## 프로젝트 작업 흐름
+## 작업 시작 진입점
 
-Claude Code는 이 저장소에서 항상 아래 흐름을 따른다.
+이 저장소에서 AI 코딩 에이전트의 실제 작업 진입점은 `AI_WORKFLOW.md`다.  
+프로젝트 개요나 일반 사용 방법이 필요할 경우에만 `README.md`를 참고한다.
 
-1. README.md 읽기
-2. 현재 작업 목적 이해
-3. plan.md 기준으로 분석
-4. Python 또는 TypeScript 런타임 판단
-5. 해당 runtime 문서 읽기
-6. build.md 기준으로 구현
-7. review.md 기준으로 검토
-8. 테스트 수행
-9. 결과 요약
+Claude Code는 작업을 받을 때 아래 순서를 기본으로 따른다.
 
-이 흐름은 기본값이며, 특별한 사유 없이 생략하지 않는다.
+1. `CLAUDE.md` 읽기
+2. `AI_WORKFLOW.md` 읽기
+3. 프로젝트 개요나 사용 방법이 필요하면 `README.md` 참고
+4. `.opencode/agents/plan.md` 기준으로 분석
+5. Python 또는 TypeScript 런타임 선택
+6. 해당 runtime 문서 확인
+7. `.opencode/agents/build.md` 기준으로 구현
+8. `.opencode/agents/review.md` 기준으로 검토
+9. 테스트 수행
+10. 결과 요약
+
+기본 흐름:
+
+CLAUDE.md  
+→ AI_WORKFLOW.md  
+→ 필요 시 README.md  
+→ plan.md  
+→ runtime 문서  
+→ build.md  
+→ review.md  
+
+---
+
+## 자동 실행 규칙
+
+Claude Code는 사용자가 짧은 작업 요청만 주더라도 아래 기본 절차를 자동 적용한다.
+
+1. 먼저 분석한다.
+2. 바로 구현하지 않는다.
+3. 영향 파일과 인터페이스 영향을 확인한다.
+4. 적절한 런타임 문서를 선택한다.
+5. 최소 수정 원칙으로 구현한다.
+6. review 기준으로 검토한다.
+7. 테스트 결과와 남은 리스크를 요약한다.
+
+작업이 모호하면 먼저 plan 단계만 수행한다.
 
 ---
 
@@ -100,18 +135,21 @@ Claude Code는 이 저장소에서 항상 아래 흐름을 따른다.
 
 Claude Code는 아래 문서를 작업 중 자동으로 참고해야 한다.
 
-| 문서 | 역할 |
-|---|---|
-| `README.md` | 프로젝트 개요, 문서 참조 순서, 작업 허브 |
-| `.opencode/agents/plan.md` | 구현 전 분석 및 영향도 파악 |
-| `.opencode/agents/build.md` | 실제 코드 작성 및 수정 규칙 |
-| `.opencode/agents/review.md` | 리뷰, 품질 점검, 리팩토링 검토 기준 |
-| `docs/ai/runtime-python.md` | Python 기반 Agent 구현 규칙 |
-| `docs/ai/runtime-typescript.md` | TypeScript 기반 Agent 구현 규칙 |
+| 문서 | 역할 | 필수 여부 |
+|---|---|---|
+| `AI_WORKFLOW.md` | AI 작업 허브, 작업 흐름 정의 | 필수 |
+| `README.md` | 프로젝트 개요 및 일반 사용법 | 필요 시 |
+| `.opencode/agents/plan.md` | 구현 전 분석 및 영향도 파악 | 필수 |
+| `.opencode/agents/build.md` | 실제 코드 작성 및 수정 규칙 | 필수 |
+| `.opencode/agents/review.md` | 리뷰, 품질 점검, 리팩토링 검토 기준 | 필수 |
+| `docs/ai/runtime-python.md` | Python 기반 Agent 구현 규칙 | Python 작업 시 |
+| `docs/ai/runtime-typescript.md` | TypeScript 기반 Agent 구현 규칙 | TypeScript 작업 시 |
+| `instruction.md` | 사용자가 Claude Code에게 작업을 시키는 방법 | 사용자 참고용 |
 
 기본 참조 순서는 아래와 같다.
 
-README.md  
+AI_WORKFLOW.md  
+→ 필요 시 README.md  
 → plan.md  
 → runtime 문서  
 → build.md  
@@ -249,7 +287,7 @@ README.md
 - 운영 키, 비밀번호, 토큰을 코드나 문서에 직접 기록
 - 지나치게 긴 설명형 주석 추가
 - 한 파일에 서로 다른 책임을 과도하게 혼합
-- README, plan, build, review, runtime 문서를 무시하고 바로 구현
+- AI_WORKFLOW, plan, build, review, runtime 문서를 무시하고 바로 구현
 - 관련 테스트 영향도를 확인하지 않고 코드만 수정
 
 ---
@@ -367,7 +405,7 @@ RAG 검색 + 체크포인트 + 복잡한 workflow가 필요하다.
 
 ### 예시 4
 무엇을 먼저 해야 할지 불명확하다.  
-→ README.md와 plan.md부터 읽고 분석부터 수행
+→ AI_WORKFLOW.md와 plan.md부터 읽고 분석부터 수행
 
 ---
 
@@ -381,5 +419,5 @@ LLM 호출은 LiteLLM Gateway를 우선한다.
 기존 구조를 존중한다.  
 테스트와 로그를 함께 본다.  
 민감정보는 남기지 않는다.  
-항상 README → plan → runtime → build → review 순서를 따른다.  
+항상 CLAUDE → AI_WORKFLOW → plan → runtime → build → review 순서를 따른다.  
 시스템 안정성을 창의성보다 우선한다.
