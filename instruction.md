@@ -52,6 +52,7 @@ project/
 ├── instruction.md
 ├── CLAUDE.md
 ├── AI_WORKFLOW.md
+├── .env.example
 │
 ├── .claude/
 │   ├── settings.json
