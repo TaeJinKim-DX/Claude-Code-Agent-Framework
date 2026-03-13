@@ -1,7 +1,3 @@
-from pathlib import Path
-
-content = """# build.md
-
 ## 문서 목적
 
 이 문서는 실제 코드 작성 및 수정 작업 시 따라야 하는 구현 규칙을 정의한다.  
@@ -273,8 +269,3 @@ LiteLLM Gateway를 우선한다.
 불필요한 추상화는 만들지 않는다.  
 민감정보를 남기지 않는다.  
 side effect는 명확히 드러내고 제어한다.
-"""
-
-path = Path("/mnt/data/build.md")
-path.write_text(content, encoding="utf-8")
-print(f"Saved to {path}")
