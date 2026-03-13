@@ -52,11 +52,20 @@ project/
 ├── instruction.md
 ├── CLAUDE.md
 ├── AI_WORKFLOW.md
+│
+├── .claude/
+│   ├── settings.json
+│   └── commands/
+│       ├── plan.md
+│       ├── implement.md
+│       └── review.md
+│
 ├── .opencode/
 │   └── agents/
 │       ├── plan.md
 │       ├── build.md
 │       └── review.md
+│
 └── docs/
     └── ai/
         ├── runtime-python.md
