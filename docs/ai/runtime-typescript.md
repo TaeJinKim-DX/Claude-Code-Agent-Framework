@@ -40,6 +40,29 @@
 
 ---
 
+## TypeScript 기술 스택 및 기준 버전
+
+| 구분 | 제품/패키지 | 기준 버전 | 용도 |
+|---|---|---:|---|
+| Runtime | Node.js | 24.14.x (LTS) 또는 프로젝트 확정 버전 | TypeScript Agent 실행 런타임 |
+| Language | TypeScript | 프로젝트 확정 버전 | Agent 개발 언어 |
+| Client Framework | Next.js | 16.1.x | TypeScript 기반 Agent UI 또는 API Gateway 계층 |
+| Agent Framework | LangGraph JS | 프로젝트 확정 버전 | 상태 기반 워크플로우 및 Agent 오케스트레이션 |
+| Agent Framework | LangChain.js + LangGraph JS | 프로젝트 확정 버전 | Tool 연동과 상태 기반 오케스트레이션 |
+| Validation | Zod | 프로젝트 확정 버전 | 요청/응답 및 Tool schema 검증 |
+| Server Framework | Hono | 4.12.x | 경량 TypeScript Agent API 제공 |
+| Server Framework | Fastify | 5.8.x | TypeScript Agent API 제공 |
+
+### 버전 관리 규칙
+
+- dependency는 위 표의 기준 버전을 따른다.
+- `package.json` 생성 시 버전 범위를 자동으로 느슨하게 생성하지 않는다.
+- 특별한 사유가 없으면 lock 파일 기준으로 고정 관리한다.
+- 표준 문서와 다른 버전을 사용할 경우 사유를 남긴다.
+- 메이저 버전 변경 시 회귀 테스트를 수행한다.
+
+---
+
 ## TypeScript Agent 적용 대상
 
 아래 경우 TypeScript 기반 Agent를 우선 검토한다.
