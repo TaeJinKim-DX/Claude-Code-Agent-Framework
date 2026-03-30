@@ -1,14 +1,25 @@
 {
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "printf 'Follow this workflow: CLAUDE.md -> AI_WORKFLOW.md -> plan.md -> runtime document -> build.md -> review.md\nUse LiteLLM Gateway. Preserve interface compatibility. Update tests with code changes. Avoid unnecessary refactoring.'"
-          }
-        ]
-      }
-    ]
+  "profile": "claude-skeleton-standard",
+  "roles": [
+    "planner",
+    "builder",
+    "reviewer"
+  ],
+  "commands": [
+    "/start-work",
+    "/plan",
+    "/implement",
+    "/review",
+    "/handoff"
+  ],
+  "artifactRoots": {
+    "plans": ".sisyphus/plans",
+    "drafts": ".sisyphus/drafts",
+    "evidence": ".sisyphus/evidence"
+  },
+  "harness": {
+    "enabled": true,
+    "strictMode": true,
+    "reviewGateRequired": true
   }
 }

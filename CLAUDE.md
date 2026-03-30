@@ -1,437 +1,50 @@
 # CLAUDE.md
 
-Primary workflow document:
-@AI_WORKFLOW.md
+## 목적
 
-Additional rule documents:
-@.opencode/agents/plan.md
-@.opencode/agents/build.md
-@.opencode/agents/review.md
-@docs/ai/runtime-python.md
-@docs/ai/runtime-typescript.md
+이 문서는 이 저장소의 최상위 운영 정책이다. 이 저장소는 **Claude Code 전용, `.claude` 중심**으로 운영한다.
 
-## 문서 목적
+## 단일 운영 모델
 
-이 문서는 이 저장소에서 작업하는 모든 AI 코딩 에이전트의 최상위 공통 규칙을 정의한다.  
-이 문서는 구현 세부사항 문서가 아니다.  
-이 문서는 프로젝트 전체에서 반드시 지켜야 할 우선순위, 판단 기준, 금지사항, 작업 전 체크리스트를 정의한다.
+- 역할: Planner / Builder / Reviewer
+- 명령: `/plan`, `/implement`, `/review`, `/start-work`, `/handoff`
+- 거버넌스 앵커: `CLAUDE.md`, `COLLABORATION.md`
+- 증거 저장 경로: `.sisyphus/evidence/`
 
-이 문서의 목적은 다음과 같다.
+## 실행 순서 (고정)
 
-- 프로젝트 전반의 공통 행동 규칙을 통일한다.
-- 긴 문맥 없이도 안정적인 코드 생성 및 수정 품질을 유지한다.
-- Python 기반 Agent와 TypeScript 기반 Agent의 공통 원칙을 유지한다.
-- 세부 구현은 하위 문서로 위임하고, 이 문서는 최상위 기준만 제공한다.
-- Claude Code가 프롬프트에 매번 문서 목록을 받지 않아도 스스로 필요한 문서를 찾아 작업하도록 유도한다.
-- 분석 → 구현 → 검토 흐름을 자동으로 따르도록 강제한다.
+1. `CLAUDE.md` 확인
+2. `COLLABORATION.md` 확인
+3. `.claude/commands/start-work.md` 기준으로 작업 시작
+4. `/plan` → `/implement` → `/review` 순서 수행
+5. 필요 시 `/handoff`로 인수인계 문서화
 
----
+## 강제 규칙
 
-## 적용 범위
+- 정책의 단일 소스는 `COLLABORATION.md`다.
+- 명령 계약, 역할 경계, 품질 게이트를 우회하지 않는다.
+- 승인되지 않은 범위 확장(스코프 크립)을 금지한다.
+- 모든 완료 선언은 증거(artifact + checklist + review 결과)로 뒷받침한다.
 
-이 문서는 다음 작업에 공통 적용한다.
+## 금지
 
-- 신규 기능 설계
-- 기존 코드 수정
-- 리팩토링
-- 버그 수정
-- 테스트 추가
-- 배포 전 점검
-- Python 기반 Agent 작업
-- TypeScript 기반 Agent 작업
+- 레거시 운영 문서 의존
+- Planner/Builder/Reviewer 역할 혼합 수행
+- 테스트/검증 없이 완료 처리
 
-이 문서는 다음 내용을 직접 다루지 않는다.
+## 문서 인덱스
 
-- Python 런타임의 세부 구현 규칙
-- TypeScript 런타임의 세부 구현 규칙
-- 리뷰 전용 상세 체크리스트
-- 특정 프레임워크의 저수준 API 사용법
-- 특정 기능의 상세 도메인 설계
+- 운영 계약: `COLLABORATION.md`
+- 역할: `.claude/agents/`
+- 명령: `.claude/commands/`
+- 규칙: `.claude/rules/`
+- 템플릿: `.claude/templates/`
+- 하네스: `.claude/harness/`
+- 워크플로: `.claude/workflows/`
+- 런타임 가이드: `.claude/runtime/`
+- 용어: `.claude/glossary/terms.md`
 
----
+## 변경 원칙
 
-## 최상위 원칙
-
-### 1. 공통 인터페이스를 우선한다
-언어가 달라도 외부 인터페이스는 최대한 통일한다.  
-요청/응답 구조, 상태값, 에러 구조, 감사 로그 기준은 공통으로 유지한다.
-
-### 2. LiteLLM Gateway를 우선한다
-LLM 호출은 LiteLLM Gateway를 기본 경로로 사용한다.  
-개별 Provider SDK 직접 연동은 예외 상황이 아니면 추가하지 않는다.
-
-### 3. 토폴로지는 고정하지 않는다
-Agent 토폴로지는 특정 패턴으로 고정하지 않는다.  
-단, 어떤 토폴로지를 선택하더라도 외부 계약과 운영 원칙은 유지한다.
-
-### 4. 구조 안정성을 우선한다
-새 기능 추가보다 기존 구조와 계약의 안정성을 우선한다.  
-이미 존재하는 인터페이스를 불필요하게 변경하지 않는다.
-
-### 5. 짧고 명확한 규칙을 따른다
-설명형 문서보다 규칙형 문서를 우선한다.  
-불필요한 추상화, 장황한 배경 설명, 반복 서술을 피한다.
-
-### 6. 작업 전 이해를 우선한다
-코드를 바로 수정하지 않는다.  
-먼저 목적, 영향 범위, 관련 파일, 기존 계약을 확인한다.
-
-### 7. 언어보다 역할을 우선한다
-Python과 TypeScript는 경쟁 관계가 아니다.  
-역할에 맞는 런타임을 선택한다.
-
-### 8. 시스템 안정성을 창의성보다 우선한다
-코드 스타일 개선이나 취향 기반 리팩토링보다 시스템 안정성과 계약 유지가 더 중요하다.
-
----
-
-## 작업 시작 진입점
-
-이 저장소에서 AI 코딩 에이전트의 실제 작업 진입점은 `AI_WORKFLOW.md`다.  
-프로젝트 개요나 일반 사용 방법이 필요할 경우에만 `README.md`를 참고한다.
-
-Claude Code는 작업을 받을 때 아래 순서를 기본으로 따른다.
-
-1. `CLAUDE.md` 읽기
-2. `AI_WORKFLOW.md` 읽기
-3. 프로젝트 개요나 사용 방법이 필요하면 `README.md` 참고
-4. `.opencode/agents/plan.md` 기준으로 분석
-5. Python 또는 TypeScript 런타임 선택
-6. 해당 runtime 문서 확인
-7. `.opencode/agents/build.md` 기준으로 구현
-8. `.opencode/agents/review.md` 기준으로 검토
-9. 테스트 수행
-10. 결과 요약
-
-기본 흐름:
-
-CLAUDE.md  
-→ AI_WORKFLOW.md  
-→ 필요 시 README.md  
-→ plan.md  
-→ runtime 문서  
-→ build.md  
-→ review.md  
-
----
-
-## 자동 실행 규칙
-
-Claude Code는 사용자가 짧은 작업 요청만 주더라도 아래 기본 절차를 자동 적용한다.
-
-1. 먼저 분석한다.
-2. 바로 구현하지 않는다.
-3. 영향 파일과 인터페이스 영향을 확인한다.
-4. 적절한 런타임 문서를 선택한다.
-5. 최소 수정 원칙으로 구현한다.
-6. review 기준으로 검토한다.
-7. 테스트 결과와 남은 리스크를 요약한다.
-
-작업이 모호하면 먼저 plan 단계만 수행한다.
-
----
-
-## 문서 참조 계층
-
-Claude Code는 아래 문서를 작업 중 자동으로 참고해야 한다.
-
-| 문서 | 역할 | 필수 여부 |
-|---|---|---|
-| `AI_WORKFLOW.md` | AI 작업 허브, 작업 흐름 정의 | 필수 |
-| `README.md` | 프로젝트 개요 및 일반 사용법 | 필요 시 |
-| `.opencode/agents/plan.md` | 구현 전 분석 및 영향도 파악 | 필수 |
-| `.opencode/agents/build.md` | 실제 코드 작성 및 수정 규칙 | 필수 |
-| `.opencode/agents/review.md` | 리뷰, 품질 점검, 리팩토링 검토 기준 | 필수 |
-| `docs/ai/runtime-python.md` | Python 기반 Agent 구현 규칙 | Python 작업 시 |
-| `docs/ai/runtime-typescript.md` | TypeScript 기반 Agent 구현 규칙 | TypeScript 작업 시 |
-| `instruction.md` | 사용자가 Claude Code에게 작업을 시키는 방법 | 사용자 참고용 |
-
-기본 참조 순서는 아래와 같다.
-
-AI_WORKFLOW.md  
-→ 필요 시 README.md  
-→ plan.md  
-→ runtime 문서  
-→ build.md  
-→ review.md  
-
----
-
-## Python / TypeScript 선택 기준
-
-| 상황 | 우선 선택 |
-|---|---|
-| RAG, 검색, 임베딩, 상태 기반 복잡 워크플로우 | Python |
-| 장기 실행, 체크포인트, 복잡한 orchestration | Python |
-| 웹 UI 밀접 통합, streaming 중심 제품 | TypeScript |
-| Node.js 서비스와 직접 결합되는 Agent | TypeScript |
-| AI 실험, 데이터 처리, 모델 연계 중심 | Python |
-| 브라우저/웹앱과 가까운 제품형 Agent | TypeScript |
-
-### 선택 규칙
-- AI 핵심 로직과 상태 기반 워크플로우는 Python을 우선 검토한다.
-- 웹 제품 통합과 UI 근접 기능은 TypeScript를 우선 검토한다.
-- 언어가 달라도 LiteLLM, 공통 인터페이스, 정책, 테스트 원칙은 유지한다.
-- 하나의 기능을 두 언어로 중복 구현하지 않는다.
-- 판단이 모호하면 먼저 `plan.md` 기준으로 분석하고, 그 후 runtime 문서를 선택한다.
-
----
-
-## LiteLLM 사용 원칙
-
-### 반드시 지켜야 할 규칙
-- LLM 호출은 LiteLLM Gateway를 우선 사용한다.
-- 모델명은 Provider 실제 이름보다 Gateway alias를 우선 사용한다.
-- 인증 정보는 코드에 하드코딩하지 않는다.
-- Provider SDK 직접 호출은 아래 조건이 모두 충족될 때만 예외로 검토한다.
-  - LiteLLM으로 구현이 불가능하다.
-  - 명확한 기술적 근거가 있다.
-  - 추후 LiteLLM 경유 전환 계획이 있다.
-
-### 최소 환경 변수 기준
-- `LITELLM_BASE_URL`
-- `LITELLM_VIRTUAL_KEY` 또는 조직 표준 인증 키
-- `LITELLM_MODEL`
-
-### 금지사항
-- 코드 내부에 API Key 직접 입력
-- 테스트 코드에 실제 운영 키 삽입
-- 팀별로 다른 방식의 LLM 호출 래퍼 난립
-- 모델 직접 호출과 Gateway 호출 혼용
-
----
-
-## Dependency 및 버전 관리 규칙
-
-- dependency 생성 시 표준 문서에 정의된 기준 버전을 따른다.
-- `requirements.txt`, `pyproject.toml`, `package.json` 생성 시 느슨한 범위(`>=`, 광범위한 `^`, `*`)를 기본값으로 사용하지 않는다.
-- 특별한 사유가 없으면 고정 버전 또는 lock 파일 기준으로 관리한다.
-- Python 작업은 `runtime-python.md`의 기준 버전을 따른다.
-- TypeScript 작업은 `runtime-typescript.md`의 기준 버전을 따른다.
-- 기준 버전과 다른 값을 사용할 경우 변경 사유를 결과 요약에 남긴다.
-
-When generating dependency files, do not invent version ranges.
-Always prefer the exact versions defined in runtime-python.md or runtime-typescript.md.
-
----
-
-## 공통 인터페이스 원칙
-
-모든 Agent는 가능한 한 아래 공통 구조를 따른다.
-
-### 요청 구조 기준
-- `agent_name`
-- `request_id`
-- `session_id`
-- `input`
-- `context`
-- `metadata`
-
-### 응답 구조 기준
-- `request_id`
-- `status`
-- `result`
-- `errors`
-- `timings`
-
-### 상태값 기준
-- `SUCCESS`
-- `PARTIAL_SUCCESS`
-- `FAILED`
-- `VALIDATION_FAILED`
-- `APPROVAL_REQUIRED`
-- `BLOCKED`
-
-### 인터페이스 규칙
-- 언어별 내부 구현이 달라도 외부 응답 구조는 최대한 유지한다.
-- Tool 호출 결과도 구조화된 형태를 우선한다.
-- 문자열 파싱 의존 로직을 최소화한다.
-- breaking change는 명확한 사유 없이 만들지 않는다.
-
----
-
-## 작업 시작 전 체크리스트
-
-코드 작업 전에 반드시 아래를 확인한다.
-
-### 공통 체크리스트
-- 이 작업의 목적이 무엇인가
-- 신규 구현인지 수정인지 리팩토링인지 구분했는가
-- 관련 파일과 영향 범위를 확인했는가
-- 기존 인터페이스를 깨뜨리지 않는가
-- Python과 TypeScript 중 어떤 런타임이 맞는지 판단했는가
-- LiteLLM 경유 원칙을 유지하는가
-- 테스트 추가 또는 수정이 필요한가
-- 로그 / 에러 처리 / 감사 이력을 고려했는가
-
-### 구현 전 최소 확인 항목
-- 입력 구조
-- 출력 구조
-- 사용 Tool
-- 권한 또는 정책 검증 필요 여부
-- side effect 여부
-- 실패 시 처리 방식
-
----
-
-## 반드시 지켜야 할 규칙
-
-- 기존 구조를 먼저 따른다.
-- 새로운 추상화를 만들기 전에 기존 공통 모듈 사용 가능성을 먼저 확인한다.
-- 코드 수정 시 관련 테스트를 함께 갱신한다.
-- 민감정보를 로그에 남기지 않는다.
-- Tool 호출 전 입력 검증을 수행한다.
-- side effect가 있는 작업은 승인 또는 정책 검토 가능 구조를 유지한다.
-- 배포 및 운영 영향을 주는 변경은 명시적으로 드러나게 한다.
-- 설명보다 동작이 명확한 코드를 우선한다.
-- 불필요한 파일 생성, 불필요한 레이어 추가, 불필요한 설정 분기를 만들지 않는다.
-- 구현 전에는 먼저 분석하고, 구현 후에는 반드시 검토한다.
-- 작업이 끝나면 변경 파일, 변경 이유, 테스트 결과, 남은 리스크를 요약한다.
-
----
-
-## 금지사항
-
-- 목적 파악 없이 바로 코드 수정
-- LiteLLM 우회 후 그대로 방치
-- 중복 모듈 추가
-- 같은 역할의 함수/클래스를 여러 이름으로 반복 구현
-- 기존 인터페이스를 조용히 변경
-- 테스트 없이 핵심 로직 수정
-- 운영 키, 비밀번호, 토큰을 코드나 문서에 직접 기록
-- 지나치게 긴 설명형 주석 추가
-- 한 파일에 서로 다른 책임을 과도하게 혼합
-- AI_WORKFLOW, plan, build, review, runtime 문서를 무시하고 바로 구현
-- 관련 테스트 영향도를 확인하지 않고 코드만 수정
-
----
-
-## 예외 처리 기준
-
-아래 경우에는 예외를 허용할 수 있다.
-
-### 1. LiteLLM 예외
-아래 조건을 모두 만족할 때만 예외 검토 가능하다.
-- 특정 Provider 기능이 Gateway에서 지원되지 않는다.
-- 단기 우회가 필요하다.
-- 우회 사유와 향후 정리 방향을 코드 또는 문서에 남긴다.
-
-### 2. 인터페이스 예외
-아래 조건을 모두 만족할 때만 구조 차이를 허용한다.
-- 외부 시스템 계약상 필수다.
-- 공통 구조 적용이 기술적으로 어렵다.
-- 어댑터 계층에서 흡수 가능하다.
-
-### 3. 런타임 예외
-Python/TypeScript 선택 기준과 다르게 가야 할 경우 아래를 남긴다.
-- 선택 사유
-- 대안 검토 결과
-- 유지보수 영향
-
-### 4. 긴급 수정 예외
-긴급 핫픽스는 단축할 수 있다.  
-단, 아래는 생략하지 않는다.
-- 직접 영향 범위 확인
-- 최소 수정 범위 유지
-- 기본 테스트 확인
-- 후속 정리 필요 여부 명시
-
----
-
-## 다른 문서와의 경계
-
-이 문서는 최상위 공통 규칙만 정의한다.
-
-### 이 문서가 담당하는 것
-- 프로젝트 전체 공통 원칙
-- Python / TypeScript 선택 기준
-- LiteLLM 사용 원칙
-- 공통 인터페이스 원칙
-- 공통 금지사항
-- 작업 시작 전 체크리스트
-- Claude Code의 기본 작업 흐름
-- 문서 참조 순서
-
-### 이 문서가 담당하지 않는 것
-- Python 세부 구현 규칙
-- TypeScript 세부 구현 규칙
-- 설계 분석 절차의 상세 단계
-- 코드 리뷰 상세 기준
-- 프레임워크별 저수준 문법
-
-### 하위 문서 참조 기준
-- 설계/영향도 분석이 필요하면 `plan.md`
-- 실제 구현 규칙이 필요하면 `build.md`
-- 리뷰/품질 점검이 필요하면 `review.md`
-- Python 구현 세부 기준은 `runtime-python.md`
-- TypeScript 구현 세부 기준은 `runtime-typescript.md`
-
----
-
-## 작업 실행 규칙
-
-Claude Code는 작업을 받을 때 아래 절차를 따른다.
-
-### 1. 작업 해석
-- 작업 내용을 한 문장으로 재정의한다.
-- 기능 추가, 수정, 버그 수정, 리팩토링 중 무엇인지 구분한다.
-
-### 2. 분석
-- `plan.md`를 기준으로 영향 범위를 정리한다.
-- 직접 변경 대상과 간접 영향 대상을 구분한다.
-- 인터페이스 영향과 테스트 영향을 확인한다.
-
-### 3. 런타임 판단
-- Python 또는 TypeScript 중 적절한 런타임을 선택한다.
-- 해당 runtime 문서를 읽는다.
-
-### 4. 구현
-- `build.md` 기준으로 구현한다.
-- 최소 수정 원칙을 따른다.
-- 기존 구조를 유지한다.
-
-### 5. 검토
-- `review.md` 기준으로 점검한다.
-- LiteLLM, 인터페이스, 테스트, 로깅, 에러 처리를 점검한다.
-
-### 6. 결과 정리
-최종적으로 아래를 항상 제공한다.
-- 변경 파일 목록
-- 변경 내용 요약
-- 테스트 결과
-- 남은 리스크 또는 후속 작업
-
----
-
-## 짧은 판단 예시
-
-### 예시 1
-RAG 검색 + 체크포인트 + 복잡한 workflow가 필요하다.  
-→ Python 우선 검토
-
-### 예시 2
-웹 채팅 UI와 streaming 응답이 핵심이다.  
-→ TypeScript 우선 검토
-
-### 예시 3
-새 모델 연동 요청이 들어왔다.  
-→ 먼저 LiteLLM Gateway 경유 가능 여부 확인
-
-### 예시 4
-무엇을 먼저 해야 할지 불명확하다.  
-→ AI_WORKFLOW.md와 plan.md부터 읽고 분석부터 수행
-
----
-
-## 최종 행동 규칙
-
-작업 전에는 이해를 우선한다.  
-구현 시에는 공통 계약을 우선한다.  
-LLM 호출은 LiteLLM Gateway를 우선한다.  
-언어 선택은 역할 기준으로 판단한다.  
-불필요한 변경은 하지 않는다.  
-기존 구조를 존중한다.  
-테스트와 로그를 함께 본다.  
-민감정보는 남기지 않는다.  
-항상 CLAUDE → AI_WORKFLOW → plan → runtime → build → review 순서를 따른다.  
-시스템 안정성을 창의성보다 우선한다.
+- 이 문서는 최소·안정 정책만 담는다.
+- 세부 규칙 변경은 `COLLABORATION.md`와 하위 `.claude/*` 문서에서 수행한다.
